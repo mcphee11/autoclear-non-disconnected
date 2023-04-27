@@ -1,0 +1,60 @@
+{
+  "name": "Get Non Disconnected Replace",
+  "integrationType": "purecloud-data-actions",
+  "actionType": "custom",
+  "config": {
+    "request": {
+      "requestUrlTemplate": "/api/v2/conversations/${input.conversationId}/participants/${input.participantId}/replace",
+      "requestType": "POST",
+      "headers": {
+        "Content-Type": "application/json"
+      },
+      "requestTemplate": "{\n  \"queueId\": \"${input.queueId}\"\n}"
+    },
+    "response": {
+      "translationMap": {},
+      "translationMapDefaults": {},
+      "successTemplate": "${rawResult}"
+    }
+  },
+  "contract": {
+    "input": {
+      "inputSchema": {
+        "$schema": "http://json-schema.org/draft-04/schema#",
+        "title": "input",
+        "description": "Replace the participant with queueId",
+        "type": "object",
+        "required": [
+          "conversationId",
+          "participantId",
+          "queueId"
+        ],
+        "properties": {
+          "conversationId": {
+            "description": "The conversationId",
+            "type": "string",
+            "minLength": 1
+          },
+          "participantId": {
+            "description": "The participantId",
+            "type": "string",
+            "minLength": 1
+          },
+          "queueId": {
+            "type": "string"
+          }
+        },
+        "additionalProperties": true
+      }
+    },
+    "output": {
+      "successSchema": {
+        "title": "response",
+        "type": "object",
+        "properties": {},
+        "additionalProperties": true
+      }
+    }
+  },
+  "secure": false
+}

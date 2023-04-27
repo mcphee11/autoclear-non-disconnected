@@ -1,0 +1,51 @@
+{
+  "name": "Get Non Disconnected Interactions UserIds",
+  "integrationType": "purecloud-data-actions",
+  "actionType": "custom",
+  "config": {
+    "request": {
+      "requestUrlTemplate": "/api/v2/users?pageSize=1000&expand=presence,routingStatus,conversationSummary",
+      "requestType": "GET",
+      "headers": {
+        "Content-Type": "application/json"
+      },
+      "requestTemplate": "${input.rawRequest}"
+    },
+    "response": {
+      "translationMap": {
+        "ARRAYUSERID": "$.entities[?(@.presence.presenceDefinition.systemPresence == 'Offline' && @.routingStatus.status == 'INTERACTING')].id"
+      },
+      "translationMapDefaults": {
+        "ARRAYUSERID": "[]"
+      },
+      "successTemplate": "{\"ARRAYUSERID\": ${ARRAYUSERID}}"
+    }
+  },
+  "contract": {
+    "input": {
+      "inputSchema": {
+        "$schema": "http://json-schema.org/draft-04/schema#",
+        "title": "input",
+        "type": "object",
+        "properties": {},
+        "additionalProperties": true
+      }
+    },
+    "output": {
+      "successSchema": {
+        "type": "object",
+        "properties": {
+          "ARRAYUSERID": {
+            "type": "array",
+            "items": {
+              "title": "USERID",
+              "type": "string"
+            }
+          }
+        },
+        "additionalProperties": true
+      }
+    }
+  },
+  "secure": false
+}

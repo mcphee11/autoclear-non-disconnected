@@ -1,0 +1,62 @@
+{
+  "name": "Get Non Disconnected ParticipantId",
+  "integrationType": "purecloud-data-actions",
+  "actionType": "custom",
+  "config": {
+    "request": {
+      "requestUrlTemplate": "/api/v2/conversations/${input.conversationId}",
+      "requestType": "GET",
+      "headers": {
+        "Content-Type": "application/json"
+      },
+      "requestTemplate": "{\n \"interval\": \"${input.INTERVAL}\",\n \"order\": \"desc\",\n \"orderBy\": \"conversationStart\",\n \"paging\": {\n  \"pageSize\": \"5\",\n  \"pageNumber\": 1\n },\n \"segmentFilters\": [\n  {\n   \"type\": \"and\",\n   \"clauses\": [\n    {\n     \"type\": \"or\",\n     \"predicates\": [\n      {\n       \"type\": \"dimension\",\n       \"dimension\": \"ani\",\n       \"operator\": \"matches\",\n       \"value\": \"tel:${input.ANI}\"\n      },\n      {\n       \"type\": \"dimension\",\n       \"dimension\": \"dnis\",\n       \"operator\": \"matches\",\n       \"value\": \"tel:${input.ANI}\"\n      }\n     ]\n    }\n   ],\n   \"predicates\": [\n    {\n     \"type\": \"dimension\",\n     \"dimension\": \"mediaType\",\n     \"operator\": \"matches\",\n     \"value\": \"voice\"\n    },\n    {\n     \"type\": \"dimension\",\n     \"dimension\": \"purpose\",\n     \"operator\": \"matches\",\n     \"value\": \"agent\"\n    }\n   ]\n  }\n ]\n}"
+    },
+    "response": {
+      "translationMap": {
+        "ARRAYPARTICIPANTID": "$.participants[?(@.purpose ==\"agent\")].id"
+      },
+      "translationMapDefaults": {
+        "ARRAYPARTICIPANTID": "[]"
+      },
+      "successTemplate": "{\"ARRAYPARTICIPANTID\": ${ARRAYPARTICIPANTID}}"
+    }
+  },
+  "contract": {
+    "input": {
+      "inputSchema": {
+        "$schema": "http://json-schema.org/draft-04/schema#",
+        "title": "input",
+        "description": "Get ParticipantId",
+        "type": "object",
+        "required": [
+          "conversationId"
+        ],
+        "properties": {
+          "conversationId": {
+            "description": "The conversationId",
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "additionalProperties": true
+      }
+    },
+    "output": {
+      "successSchema": {
+        "title": "response",
+        "type": "object",
+        "properties": {
+          "ARRAYPARTICIPANTID": {
+            "type": "array",
+            "items": {
+              "title": "PARTICIPANTID",
+              "type": "string"
+            }
+          }
+        },
+        "additionalProperties": true
+      }
+    }
+  },
+  "secure": false
+}

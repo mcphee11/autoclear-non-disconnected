@@ -1,0 +1,44 @@
+{
+  "name": "Get Non Disconnected Trigger Workflow",
+  "integrationType": "purecloud-data-actions",
+  "actionType": "custom",
+  "config": {
+    "request": {
+      "requestUrlTemplate": "/api/v2/flows/executions",
+      "requestType": "POST",
+      "headers": {},
+      "requestTemplate": "{\n\"flowId\": \"${input.flowId}\"\n}"
+    },
+    "response": {
+      "translationMap": {},
+      "translationMapDefaults": {},
+      "successTemplate": "${rawResult}"
+    }
+  },
+  "contract": {
+    "input": {
+      "inputSchema": {
+        "title": "data",
+        "type": "object",
+        "required": [
+          "flowId"
+        ],
+        "properties": {
+          "flowId": {
+            "type": "string"
+          }
+        },
+        "additionalProperties": true
+      }
+    },
+    "output": {
+      "successSchema": {
+        "title": "response",
+        "type": "object",
+        "properties": {},
+        "additionalProperties": true
+      }
+    }
+  },
+  "secure": false
+}

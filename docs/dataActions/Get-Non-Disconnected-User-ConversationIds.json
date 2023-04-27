@@ -1,0 +1,71 @@
+{
+  "name": "Get Non Disconnected User ConversationIds",
+  "integrationType": "purecloud-data-actions",
+  "actionType": "custom",
+  "config": {
+    "request": {
+      "requestUrlTemplate": "/api/v2/analytics/conversations/details/query",
+      "requestType": "POST",
+      "headers": {
+        "Content-Type": "application/json"
+      },
+      "requestTemplate": "{\n \"interval\": \"${input.startTime}/${input.endTime}\",\n \"order\": \"desc\",\n \"orderBy\": \"conversationStart\",\n \"paging\": {\n  \"pageSize\": 100,\n  \"pageNumber\": 1\n },\n \"segmentFilters\": [\n  {\n   \"type\": \"or\",\n   \"predicates\": [\n    {\n     \"type\": \"dimension\",\n     \"dimension\": \"userId\",\n     \"operator\": \"matches\",\n     \"value\": \"${input.userId}\"\n    }\n   ]\n  }\n ],\n \"conversationFilters\": [\n  {\n   \"type\": \"or\",\n   \"predicates\": [\n    {\n     \"type\": \"dimension\",\n     \"dimension\": \"conversationEnd\",\n     \"operator\": \"notExists\",\n     \"value\": null\n    }\n   ]\n  }\n ]\n}"
+    },
+    "response": {
+      "translationMap": {
+        "ARRAYCONVSATIONID": "$.conversations[*].conversationId"
+      },
+      "translationMapDefaults": {
+        "ARRAYCONVSATIONID": "[]"
+      },
+      "successTemplate": "{\n   \"ARRAYCONVSATIONID\": ${ARRAYCONVSATIONID}\n}"
+    }
+  },
+  "contract": {
+    "input": {
+      "inputSchema": {
+        "title": "input",
+        "description": "Get conversationIds",
+        "type": "object",
+        "$schema": "http://json-schema.org/draft-04/schema#",
+        "required": [
+          "startTime",
+          "endTime",
+          "userId"
+        ],
+        "properties": {
+          "startTime": {
+            "description": "Start time - YYYY-MM-DDTHH:MM:SS.000Z",
+            "type": "string",
+            "minLength": 1
+          },
+          "endTime": {
+            "description": "End time - YYYY-MM-DDTHH:MM:SS.000Z",
+            "type": "string",
+            "minLength": 1
+          },
+          "userId": {
+            "type": "string"
+          }
+        },
+        "additionalProperties": true
+      }
+    },
+    "output": {
+      "successSchema": {
+        "type": "object",
+        "properties": {
+          "ARRAYCONVSATIONID": {
+            "type": "array",
+            "items": {
+              "title": "CONVERSATIONID",
+              "type": "string"
+            }
+          }
+        },
+        "additionalProperties": true
+      }
+    }
+  },
+  "secure": false
+}
